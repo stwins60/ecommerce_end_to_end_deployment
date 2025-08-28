@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern E-commerce Store</title>
+    <link rel="stylesheet" href="/templates/style.css">
+</head>
+<body>
+    <header>
+        E-commerce Store
+    </header>
+    <section class="products">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width:100%;height:140px;object-fit:cover;border-radius:6px;margin-bottom:0.7rem;">
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">${{ product.price }}</div>
+            <button class="add-cart-btn" onclick="addToCart({{ product.id }})">Add to Cart</button>
+        </div>
+        {% endfor %}
+    </section>
+    <section class="cart-section">
+        <div class="cart-title">Cart (<span id="cart-count">0</span> items)</div>
+        <ul class="cart-list" id="cart-list"></ul>
+        <button id="checkout-btn" class="add-cart-btn" style="margin-top:1rem;display:inline-block;">Checkout</button>
+    </section>
+    <script src="/templates/main.js"></script>
+</body>
+</html>

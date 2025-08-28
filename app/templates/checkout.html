@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/templates/style.css">
+</head>
+<body>
+    <header>Checkout</header>
+    <section class="cart-section">
+        <div class="cart-title">Review Your Order</div>
+        <ul class="cart-list" id="checkout-list"></ul>
+        <form id="checkout-form" style="margin-top:2rem;">
+            <input type="text" name="name" placeholder="Full Name" required style="width:100%;margin-bottom:1rem;padding:0.5rem;">
+            <input type="email" name="email" placeholder="Email" required style="width:100%;margin-bottom:1rem;padding:0.5rem;">
+            <input type="text" name="address" placeholder="Shipping Address" required style="width:100%;margin-bottom:1rem;padding:0.5rem;">
+            <button type="submit" class="add-cart-btn" style="width:100%;">Place Order</button>
+        </form>
+        <div id="order-status" style="margin-top:1rem;color:green;"></div>
+    </section>
+    <a href="/" class="add-cart-btn" style="margin:2rem 0 0 2rem;display:inline-block;">&#8592; Back to Products</a>
+    <script src="/templates/main.js"></script>
+    <script>
+    window.onload = async function() {
+        const res = await fetch("/cart");
+        const cart = await res.json();
+        document.getElementById("checkout-list").innerHTML = cart.map(item => `<li>${item.name} - $${item.price}</li>`).join("");
+    };
+    document.getElementById("checkout-form").onsubmit = async function(e) {
+        e.preventDefault();
+        document.getElementById("order-status").textContent = "Order placed!";
+        await fetch("/cart", {method: "DELETE"});
+    };
+    </script>
+</body>
+</html>

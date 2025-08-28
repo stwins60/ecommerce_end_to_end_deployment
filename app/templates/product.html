@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="/templates/style.css">
+</head>
+<body>
+    <header>Product Details</header>
+    <section class="products" style="justify-content:center;">
+        <div class="product-card" style="max-width:400px;">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width:100%;height:200px;object-fit:cover;border-radius:6px;margin-bottom:0.7rem;">
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">${{ product.price }}</div>
+            <button class="add-cart-btn" onclick="addToCart({{ product.id }})">Add to Cart</button>
+        </div>
+    </section>
+    <a href="/" class="add-cart-btn" style="margin:2rem 0 0 2rem;display:inline-block;">&#8592; Back to Products</a>
+    <script src="/templates/main.js"></script>
+</body>
+</html>
