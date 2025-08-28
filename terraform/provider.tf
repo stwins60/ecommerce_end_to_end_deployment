@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "kubernetes" {
-  config_path    = pathexpand("~/.kube/config")
+  config_path    = getenv("KUBECONFIG")
   config_context = "default"
 }
 
