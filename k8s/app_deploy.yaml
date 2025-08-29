@@ -15,9 +15,11 @@ metadata:
   namespace: NAMESPACE
 spec:
   selector:
+    matchLabels:
       app: ecommerce-app
   template:
     metadata:
+      labels:
         app: ecommerce-app
     spec:
       containers:
