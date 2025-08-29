@@ -35,15 +35,6 @@ spec:
   selector:
     matchLabels:
       app: postgres-server-ENV_SUFFIX
-    name: postgres-service
-    namespace: postgres-ns
-  spec:
-    selector:
-      app: postgres-server-dev
-    ports:
-    - port: 5432
-      targetPort: 5432
-    clusterIP: None
   template:
     metadata:
       labels:
@@ -62,11 +53,11 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 5432
-    envFrom:
-    - configMapRef:
-      name: postgres-config
-    - secretRef:
-      name: postgres-secret
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        - secretRef:
+            name: postgres-secret
 
 ---
 apiVersion: v1
