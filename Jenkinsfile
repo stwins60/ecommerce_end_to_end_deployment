@@ -34,8 +34,10 @@ pipeline {
                 script {
                     if (env.GIT_BRANCH == "origin/dev" || env.BRANCH_NAME == "dev") {
                         env.NAMESPACE = "dev"
+                        env.ENVIRONMENT="development"
                     } else if (env.GIT_BRANCH == "origin/prod" || env.BRANCH_NAME == "prod") {
                         env.NAMESPACE = "prod"
+                        env.ENVIRONMENT = "production"
                     } else {
                         env.NAMESPACE = "staging"
                     }
@@ -43,15 +45,17 @@ pipeline {
             }
         }
 
-        stage('Terraform Deploy') {
+        stage('K8S Deploy') {
             steps {
-                withCredentials([file(credentialsId: '81721d8d-c77d-4f02-83bc-87a187c20352', variable: 'KUBECONFIG_FILE')]) {
-                    dir('terraform') {
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: '81721d8d-c77d-4f02-83bc-87a187c20352', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                    dir('k8s') {
                         sh """
-                          export KUBECONFIG=$KUBECONFIG_FILE
-                          terraform init
-                          terraform plan -var="image_tag=${IMAGE_TAG}" -var="namespace=${NAMESPACE}"
-                          terraform apply -auto-approve -var="image_tag=${IMAGE_TAG}" -var="namespace=${NAMESPACE}"
+                          sed -i 's|environment: .*|environment: ${ENVIRONMENT}|g' postgres.yaml
+                          sed -i 's|environment: .*|environment: ${ENVIRONMENT}|g' app_deploy.yaml
+                          sed -i 's|namespace: .*|namespace: ${NAMESPACE}|g' app_deploy.yaml
+
+                          echo "Apply deployment"
+                          kubectl apply -f .
                         """
                     }
                 }

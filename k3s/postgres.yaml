@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres-ns
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: postgres-ns
+data:
+  POSTGRES_DB: ecommercedb
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: "5432"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: postgres-ns
+type: Opaque
+data:
+  POSTGRES_USER: cG9zdGdyZXM=      # base64 for "postgres"
+  POSTGRES_PASSWORD: cG9zdGdyZXM=  # base64 for "postgres"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-server-NAMESPACE
+  namespace: postgres-ns
+  labels:
+    environment: ENVIRONMENT
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-server
+      environment: ENVIRONMENT
+  template:
+    metadata:
+      labels:
+        app: postgres-server
+        environment: ENVIRONMENT
+    spec:
+      containers:
+      - name: postgres-server
+        image: postgres:15
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        - secretRef:
+            name: postgres-secret
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: postgres-ns
+spec:
+  selector:
+    app: postgres-server-NAMESPACE
+  ports:
+  - port: 5432
+    targetPort: 5432
+  clusterIP: None
+
+
