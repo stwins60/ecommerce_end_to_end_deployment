@@ -51,8 +51,11 @@ pipeline {
                     dir('k8s') {
                         sh """
                           sed -i 's|environment: .*|environment: ${ENVIRONMENT}|g' postgres.yaml
+                          sed -i 's|namespace: .*|namespace: ${NAMESPACE}|g' postgres.yaml
+                          sed -i 's|ENV_SUFFIX|${NAMESPACE}|g' postgres.yaml
                           sed -i 's|environment: .*|environment: ${ENVIRONMENT}|g' app_deploy.yaml
                           sed -i 's|namespace: .*|namespace: ${NAMESPACE}|g' app_deploy.yaml
+                          sed -i 's|IMAGE_TAG|${IMAGE_TAG}|g' app_deploy.yaml
 
                           echo "Apply deployment"
                           kubectl apply -f .

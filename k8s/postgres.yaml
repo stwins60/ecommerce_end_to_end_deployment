@@ -26,7 +26,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-server-NAMESPACE
+  name: postgres-server-ENV_SUFFIX
   namespace: postgres-ns
   labels:
     environment: ENVIRONMENT
@@ -34,12 +34,20 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-server
-      environment: ENVIRONMENT
+      app: postgres-server-ENV_SUFFIX
+    name: postgres-service
+    namespace: postgres-ns
+  spec:
+    selector:
+      app: postgres-server-dev
+    ports:
+    - port: 5432
+      targetPort: 5432
+    clusterIP: None
   template:
     metadata:
       labels:
-        app: postgres-server
+        app: postgres-server-ENV_SUFFIX
         environment: ENVIRONMENT
     spec:
       containers:
@@ -54,21 +62,21 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 5432
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        - secretRef:
-            name: postgres-secret
-        
+    envFrom:
+    - configMapRef:
+      name: postgres-config
+    - secretRef:
+      name: postgres-secret
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service
+  name: postgres-service-ENV_SUFFIX
   namespace: postgres-ns
 spec:
   selector:
-    app: postgres-server-NAMESPACE
+    app: postgres-server-ENV_SUFFIX
   ports:
   - port: 5432
     targetPort: 5432
