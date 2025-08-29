@@ -4,7 +4,7 @@ metadata:
   name: ecommerce-app-config
   namespace: NAMESPACE
 data:
-  DATABASE_URL: postgresql://postgres:postgres@postgres-service.postgres-ns.svc.cluster.local:5432/ecommercedb
+  DATABASE_URL: postgresql://postgres:postgres@postgres-service-NAMESPACE/ecommercedb
   FLASK_ENV: ENVIRONMENT
 
 ---
@@ -49,4 +49,5 @@ spec:
   ports:
   - port: 5000
     targetPort: 5000
+  type: NodePort
 
